@@ -1,9 +1,10 @@
 require "minitest/autorun"
+require 'minitest-metadata'
 require 'minitest/spec'
 require 'minitest/reporters'
 require "minitest/capybara"
 require "minitest/features"
-require 'minitest-metadata'
+
 require 'capybara/poltergeist'
 require 'pry'
 
@@ -25,8 +26,8 @@ Capybara.configure do |config|
 
   # config.save_and_open_page_path = File.dirname(__FILE__) + '/../snapshots'
   config.default_driver = :selenium
-  config.javascript_driver = :poltergeist
 end
+Capybara.javascript_driver = :poltergeist
 
 # Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |example|
 #   "screenshot_#{example.description.gsub(' ', '-').gsub(/^.*\/spec\//,'')}"
@@ -39,12 +40,8 @@ require "minitest/pride"
 # for minitest/spec
 class AcceptanceSpec < Minitest::Spec
   include Capybara::DSL
-  include Capybara::Assertions
-  include MiniTest::Metadata
-
 
   before do
-    puts metadata
     if metadata[:js]
       Capybara.current_driver = Capybara.javascript_driver # Used for Ajax Request
     else
