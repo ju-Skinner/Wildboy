@@ -8,8 +8,6 @@ require "minitest/features"
 require 'capybara/poltergeist'
 require 'pry'
 
-# require 'capybara-screenshot/minitest'
-
 Minitest::Reporters.use!(
   Minitest::Reporters::SpecReporter.new(:color => true),
   ENV,
@@ -26,13 +24,8 @@ Capybara.configure do |config|
 
   # config.save_and_open_page_path = File.dirname(__FILE__) + '/../snapshots'
   config.default_driver = :selenium
+  config.javascript_driver = :poltergeist
 end
-Capybara.javascript_driver = :poltergeist
-
-# Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |example|
-#   "screenshot_#{example.description.gsub(' ', '-').gsub(/^.*\/spec\//,'')}"
-# end
-# Capybara.save_and_open_page_path = "/test/failures"
 
 # Uncomment for awesome colorful output
 require "minitest/pride"

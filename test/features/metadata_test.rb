@@ -1,10 +1,9 @@
 require "test_helper"
 
-
-class MetaDataTest < AcceptanceSpec
+class MetadataTest < AcceptanceSpec
   describe "Capybara" do
 
-    it 'should use poltergeist with js metadata', :js do
+    it 'should use poltergeist with js metadata', :js => true do
       Capybara.current_driver.must_equal :poltergeist
     end
 

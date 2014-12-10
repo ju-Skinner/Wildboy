@@ -26,6 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "minitest-reporters"
   spec.add_dependency "minitest-metadata"
   spec.add_dependency "poltergeist"
-  # spec.add_dependency 'capybara-screenshot'
 
 end
