@@ -1,19 +1,15 @@
 require "test_helper"
 
-describe "CanAccessHome" do
-  it 'should login with user' do
-    visit '/'
-    login!
-    page.must_have_content "Welcome Julian Skinner"
+
+class MetaDataTest < AcceptanceSpec
+  describe "Capybara" do
+
+    it 'should use poltergeist with js metadata', :js do
+      Capybara.current_driver.must_equal :poltergeist
+    end
+
+    it 'should use selenium without js metadata' do
+      Capybara.current_driver.must_equal :selenium
+    end
   end
-end
-
-
-def login!
-  within 'form#new_user' do
-    fill_in 'Email', :with => 'j.skinner@arpc.com'
-    fill_in 'Password', :with => 'yagni123'
-  end
-
-  click_link_or_button 'Sign in'
 end
