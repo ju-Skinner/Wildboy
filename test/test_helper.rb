@@ -45,18 +45,17 @@ class Minitest::Spec
 
   after  do
     if ['F', 'E'].include?(result_code)
-      puts "Passed: #{passed?}, Error: #{error?}, Failed: #{failures.size}"
+      timestamp = Time.new.strftime("%Y%m%d%H%M%S")
+      filename = File.basename(method(name).source_location[0]).gsub(/.rb$/, '') # Gets the actual file_name for failure
+      line_number = File.basename(failure.backtrace.grep(/#{filename}/)[0]).gsub(/(:in).*/,'').split(':')[1] # Locates the exception in stacktrace and gets the line number
 
-      # filename = File.basename(meta[:file_path])
-      # line_number = meta[:line_number]
-      # screenshot_name = "screenshot-#{filename}-#{line_number}.png"
-      # screenshot_name = "screenshot.png"
-      # path = Pathname.new(File.expand_path "test/failures")
-      # screenshot_path = "#{path}/#{screenshot_name}"
-      puts metadata
-      result = page.save_page
+      page_name = "#{filename}-#{line_number}-#{timestamp}#{rand(10**10)}.html"
+      full_path = File.join('failures', page_name)
 
-      puts "\n Screenshot: #{result}"
+      result = page.save_page(full_path)
+
+      #print(ANSI::Code.yellow {"\n  Screenshot: "}) # Will add color syntax later
+      puts "\n  Screenshot: #{result}"
     end
 
     Capybara.reset_session!
