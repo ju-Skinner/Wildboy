@@ -8,5 +8,9 @@ Rake::TestTask.new do |t|
   # t.pattern = "test/*_test.rb"
 end
 
+Rake::TestTask.new(:unit) do |t|
+  t.pattern = 'test/unit/**/*_test.rb'
+end
+
 desc 'Run tests'
 task :default => :test

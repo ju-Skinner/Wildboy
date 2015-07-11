@@ -9,20 +9,21 @@ require 'capybara/poltergeist'
 require 'pry'
 
 Minitest::Reporters.use!(
-  Minitest::Reporters::SpecReporter.new(:color => true),
-  ENV,
-  Minitest.backtrace_filter
+  Minitest::Reporters::SpecReporter.new(:color => true)
+#   ,ENV
+#   ,Minitest.backtrace_filter
 )
 
 # Capybara Configuration
 Capybara.configure do |config|
   config.run_server = false
-  config.app_host = 'http://localhost:3000'
+  config.app_host = 'http://localhost:3000' #'http://acceptance.iclaimsonline.com'
+  config.asset_host = config.app_host
   config.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new(app, :browser => :firefox)
   end
 
-  # config.save_and_open_page_path = File.dirname(__FILE__) + '/../snapshots'
+  config.save_and_open_page_path = Pathname.new(File.expand_path "failures")
   config.default_driver = :selenium
   config.javascript_driver = :poltergeist
 end
@@ -31,7 +32,7 @@ end
 require "minitest/pride"
 
 # for minitest/spec
-class AcceptanceSpec < Minitest::Spec
+class Minitest::Spec
   include Capybara::DSL
 
   before do
@@ -42,8 +43,26 @@ class AcceptanceSpec < Minitest::Spec
     end
   end
 
-  def teardown
+  after  do
+    if ['F', 'E'].include?(result_code)
+      timestamp = Time.new.strftime("%Y%m%d%H%M%S")
+      filename = File.basename(method(name).source_location[0]).gsub(/.rb$/, '') # Gets the actual file_name for failure
+      line_number = File.basename(failure.backtrace.grep(/#{filename}/)[0]).gsub(/(:in).*/,'').split(':')[1] # Locates the exception in stacktrace and gets the line number
+      output_name = "#{filename}-#{line_number}-#{timestamp}#{rand(10**10)}"
+      page_name = "#{output_name}.html"
+      screenshot_name = "#{output_name}.png"
+      html_path = File.join('failures', page_name)
+      screenshot_path = File.join('failures', screenshot_name)
+      result = page.save_page(html_path)
+      result = page.save_screenshot(screenshot_path)
+      #print(ANSI::Code.yellow {"\n  Screenshot: "}) # Will add color syntax later
+      puts "\n  Screenshot: #{result}"
+    end
+
     Capybara.reset_session!
     Capybara.use_default_driver
   end
+  # def teardown
+  #
+  # end
 end

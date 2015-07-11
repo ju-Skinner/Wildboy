@@ -1,0 +1,3 @@
+# Default Wildboy Configuration File
+
+base_url: http://google.com #change to the base url of your system under test
